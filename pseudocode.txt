@@ -1,0 +1,73 @@
+CLASS DataKoperasi
+    VARIABLES:
+        - nama : String
+        - nomorInduk : Integer
+        - nomorTelepon : String
+        - alamat : String
+        - jenisKelamin : String
+        - simpanan : Integer
+        - pekerjaan : String
+
+    CONSTRUCTOR(nama, nomorInduk, nomorTelepon, alamat, jenisKelamin, simpanan, pekerjaan)
+        SET this.nama = nama
+        SET this.nomorInduk = nomorInduk
+        SET this.nomorTelepon = nomorTelepon
+        SET this.alamat = alamat
+        SET this.jenisKelamin = jenisKelamin
+        SET this.simpanan = simpanan
+        SET this.pekerjaan = pekerjaan
+
+    METHODS:
+        - SETTER dan GETTER untuk semua atribut
+
+CLASS ProjekKoprasi
+    VARIABLES:
+        - input : Scanner
+        - database : ArrayList of DataKoperasi
+        - isRunning : Boolean
+        - bunga : Integer
+
+    FUNCTION showMenu()
+        PRINT menu pilihan
+        INPUT selectedMenu
+        SWITCH selectedMenu:
+            CASE 1: CALL addData()
+            CASE 2: CALL showAll(false)
+            CASE 3: CALL editData()
+            CASE 4: CALL deleteData()
+            CASE 5: EXIT program
+            DEFAULT: PRINT "Pilihan Salah!" CALL showMenu()
+
+    FUNCTION addData()
+        LOOP UNTIL user stops:
+            INPUT semua atribut DataKoperasi
+            VALIDATE jenisKelamin (harus 'L' atau 'P')
+            ADD data baru ke database
+            ASK user untuk melanjutkan atau berhenti
+
+    FUNCTION showAll(readOnly)
+        IF database kosong:
+            PRINT "Belum Ada Data!"
+            RETURN
+        CALCULATE total halaman berdasarkan jumlah data
+        LOOP UNTIL user memilih keluar:
+            DISPLAY data pada halaman tertentu
+            CALCULATE subtotal dan grand total
+            ASK user untuk navigasi halaman atau keluar
+
+    FUNCTION editData()
+        CALL showAll(true)
+        INPUT index data yang akan diedit
+        INPUT dan SET ulang atribut DataKoperasi berdasarkan input user
+        VALIDATE jenisKelamin (harus 'L' atau 'P')
+        PRINT "Berhasil mengedit data!"
+
+    FUNCTION deleteData()
+        CALL showAll(true)
+        INPUT index data yang akan dihapus
+        REMOVE data dari database
+        PRINT "Berhasil menghapus data!"
+
+    MAIN FUNCTION main()
+        LOOP WHILE isRunning:
+            CALL showMenu()

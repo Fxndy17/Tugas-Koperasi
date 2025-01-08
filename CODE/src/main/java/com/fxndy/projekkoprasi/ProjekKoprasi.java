@@ -3,19 +3,100 @@ package com.fxndy.projekkoprasi;
 import java.io.IOException;
 import java.util.*;
 
+class DataKoperasi {
+    
+    String nama;
+    int nomorInduk;
+    String nomorTelepon;
+    String alamat;
+    String jenisKelamin;
+    int simpanan;
+    String pekerjaan;
+
+    public DataKoperasi(String nama, int nomorInduk, String nomorTelepon, String alamat, String jenisKelamin, int simpanan, String pekerjaan) {
+        this.nama = nama;
+        this.nomorInduk = nomorInduk;
+        this.nomorTelepon = nomorTelepon;
+        this.alamat = alamat;
+        this.jenisKelamin = jenisKelamin;
+        this.simpanan = simpanan;
+        this.pekerjaan = pekerjaan;
+    }
+
+    // ubah data
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+
+    public void setNomorInduk(int nomorInduk) {
+        this.nomorInduk = nomorInduk;
+    }
+
+    public void setNomorTelepon(String nomorTelepon) {
+        this.nomorTelepon = nomorTelepon;
+    }
+
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
+    }
+
+    public void setJenisKelamin(String jenisKelamin) {
+        this.jenisKelamin = jenisKelamin;
+    }
+
+    public void setSimpanan(int simpanan) {
+        this.simpanan = simpanan;
+    }
+
+    public void setPekerjaan(String pekerjaan) {
+        this.pekerjaan = pekerjaan;
+    }
+
+    // Ngambil data
+    public String getNama() {
+        return nama;
+    }
+
+    public int getNomorInduk() {
+        return nomorInduk;
+    }
+
+    public String getNomorTelepon() {
+        return nomorTelepon;
+    }
+
+    public String getAlamat() {
+        return alamat;
+    }
+
+    public String getJenisKelamin() {
+        return jenisKelamin;
+    }
+
+    public int getSimpanan() {
+        return simpanan;
+    }
+
+    public String getPekerjaan() {
+        return pekerjaan;
+    }
+}
+
 public class ProjekKoprasi {
 
     private static final Scanner input = new Scanner(System.in);
     static ArrayList<DataKoperasi> database = new ArrayList<>();
     static boolean isRunning = true;
+    static int bunga = 2;
 
     static void showMenu() throws IOException {
-        System.out.println("========= KOPERASI =========");
+        System.out.println("========= Koperasi An Nisa =========");
         System.out.println("[1] Isi Data");
         System.out.println("[2] Lihat Laporan");
         System.out.println("[3] Koreksi / edit data");
         System.out.println("[4] Hapus Data");
         System.out.println("[5] Keluar");
+        System.out.println("====================================");
         System.out.print("PILIH MENU > ");
 
         int selectedMenu = Integer.parseInt(input.next());
@@ -24,9 +105,12 @@ public class ProjekKoprasi {
             case 1 -> addData();
             case 2 -> showAll(false);
             case 3 -> editData();
+            case 4 -> deleteData();
             case 5 -> System.exit(0);
             default -> {
-                System.out.println("Pilihan Salah!");
+                System.out.println("");
+                System.out.println("[!] Pilihan Salah!");
+                System.out.println("");
                 showMenu();
             }
         }
@@ -34,8 +118,10 @@ public class ProjekKoprasi {
 
     static void addData() throws IOException {
         boolean lanjut = true;
-
+        
         do {
+            System.out.println("");
+
             System.out.print("Nama: ");
             String nama = input.next();
 
@@ -58,18 +144,16 @@ public class ProjekKoprasi {
             }
 
             System.out.print("Jumlah Simpanan: ");
-            double simpanan = input.nextDouble();
-
-            System.out.print("Masukkan Bunga: ");
-            double bunga = input.nextDouble();
+            int simpanan = input.nextInt();
 
             System.out.print("Pekerjaan: ");
             String pekerjaan = input.next();
 
-            database.add(new DataKoperasi(nama, induk, nomorTelepon, alamat, jenisKelamin, simpanan, bunga, pekerjaan));
-
+            database.add(new DataKoperasi(nama, induk, nomorTelepon, alamat, jenisKelamin, simpanan, pekerjaan));
+            
             System.out.print("Tambah data lagi? (y/t): ");
             String jawab = input.next();
+            System.out.println("");
             if (!jawab.equalsIgnoreCase("y")) {
                 lanjut = false;
             }
@@ -77,14 +161,15 @@ public class ProjekKoprasi {
     }
 
     static void showAll(boolean readOnly) throws IOException {
-
+        System.out.println("");
         if (database.isEmpty()) {
-            System.out.println("Belum Ada Data!");
+            System.out.println("[!] Belum Ada Data!");
+            System.out.println("");
             return;
         }
 
-        double totalGrandSimpanan = 0;
-        double totalGrandBunga = 0;
+        int totalGrandSimpanan = 0;
+        int totalGrandBunga = 0;
         int page = 1;
         int recordsPerPage = 3;
         int totalPages = (int) Math.ceil((double) database.size() / recordsPerPage);
@@ -92,10 +177,10 @@ public class ProjekKoprasi {
         int baris = 133;
 
         while (true) {
-            double totalSimpanan = 0, totalBunga = 0;
-                
+            int totalSimpanan = 0, totalBunga = 0;
+
             System.out.println("LAPORAN KOPERASI");
-            System.out.printf("%-100s %-2s\n", "7 Januari 2025", "Hal " + page);
+            System.out.printf("%-120s %-2s\n", "7 Januari 2025", "Hal " + page);
             System.out.println("-".repeat(baris));
             System.out.println(
                     "|    |            |              |             |               |                 Nomer                   |              |           |");
@@ -116,22 +201,29 @@ public class ProjekKoprasi {
                 String nomorTelepon = data.getNomorTelepon();
                 String alamat = data.getAlamat();
                 String jenisKelamin = data.getJenisKelamin();
-                double simpanan = data.getSimpanan();
-                double bunga = data.getBunga();
+                int simpanan = data.getSimpanan();
                 String pekerjaan = data.getPekerjaan();
+
+                int bungaTotal = data.getSimpanan() * bunga / 100;
+
                 System.out.printf(
-                    "| %-2s | %-10s | %-12s | %-11s | %-13s |         %-9s | %-19s |     %-8s |    %-6s |\n",
-                    no, nama, alamat, jenisKelamin, pekerjaan, nomorInduk, nomorTelepon, simpanan, bunga);
-                
-                double total = simpanan * (1.0D + bunga / 100.0D);
-                totalSimpanan += total;
-                totalBunga += total;
+                        "| %-2s | %-10s | %-12s | %-11s | %-13s |         %-9s | %-19s |     %-8s |    %-6s |\n",
+                        no, nama, alamat, jenisKelamin, pekerjaan, nomorInduk, nomorTelepon, simpanan, bungaTotal);
+
+                totalSimpanan += simpanan;
+                totalBunga += bungaTotal;
                 no++;
             }
 
             totalGrandSimpanan += totalSimpanan;
             totalGrandBunga += totalBunga;
 
+            System.out.println("-".repeat(baris));
+            System.out.printf("| %-2s | %-97s |     %-8s |    %-6s |\n",
+            "", "Subtotal Hal Ini", totalSimpanan, totalBunga);
+            System.out.println("-".repeat(baris));
+            System.out.printf("| %-2s | %-97s |     %-8s |    %-6s |\n",
+            "", "Grand total", totalGrandSimpanan, totalGrandBunga);
             System.out.println("-".repeat(baris));
 
             if (readOnly == true)
@@ -146,6 +238,7 @@ public class ProjekKoprasi {
             }
 
             String jawab = input.next();
+            System.out.println("");
 
             if (jawab.equalsIgnoreCase("n") && page < totalPages) {
                 page++;
@@ -154,6 +247,7 @@ public class ProjekKoprasi {
             } else if (jawab.equalsIgnoreCase("q")) {
                 break;
             } else {
+                showAll(false);
                 System.out.println("Input tidak valid. Silakan coba lagi.");
                 break;
             }
@@ -195,18 +289,16 @@ public class ProjekKoprasi {
         data.setJenisKelamin(jenisKelamin);
 
         System.out.print("Jumlah Simpanan: ");
-        double simpanan = input.nextDouble();
+        int simpanan = input.nextInt();
         data.setSimpanan(simpanan);
-
-        System.out.print("Masukkan Bunga: ");
-        double bunga = input.nextDouble();
-        data.setBunga(bunga);
 
         System.out.print("Pekerjaan: ");
         String pekerjaan = input.next();
         data.setPekerjaan(pekerjaan);
 
-        System.out.println("Berhasil mengedit data!");
+        System.out.println("[!] Berhasil mengedit data!");
+
+        System.out.println("");
     }
 
     static void deleteData() throws IOException {
@@ -217,15 +309,13 @@ public class ProjekKoprasi {
 
         database.remove(index);
 
-        System.out.println("Berhasil menghapus data!");
+        System.out.println("[!] Berhasil menghapus data!");
+        System.out.println("");
     }
 
     public static void main(String[] args) throws IOException {
-        
-        database.add(new DataKoperasi("nama", 2, "123", "3", "P", 0.9, 0.9, "09"));
-        showAll(false);
-        // do {
-        //     showMenu();
-        // } while (isRunning);
+        do {
+            showMenu();
+        } while (isRunning);
     }
 }
