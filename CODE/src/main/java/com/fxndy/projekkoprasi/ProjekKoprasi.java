@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 class DataKoperasi {
-    
+
     String nama;
     int nomorInduk;
     String nomorTelepon;
@@ -13,7 +13,8 @@ class DataKoperasi {
     int simpanan;
     String pekerjaan;
 
-    public DataKoperasi(String nama, int nomorInduk, String nomorTelepon, String alamat, String jenisKelamin, int simpanan, String pekerjaan) {
+    public DataKoperasi(String nama, int nomorInduk, String nomorTelepon, String alamat, String jenisKelamin,
+            int simpanan, String pekerjaan) {
         this.nama = nama;
         this.nomorInduk = nomorInduk;
         this.nomorTelepon = nomorTelepon;
@@ -95,18 +96,26 @@ public class ProjekKoprasi {
         System.out.println("[2] Lihat Laporan");
         System.out.println("[3] Koreksi / edit data");
         System.out.println("[4] Hapus Data");
-        System.out.println("[5] Keluar");
+        System.out.println("[5] Cetak Struk");
+        System.out.println("[6] Keluar");
         System.out.println("====================================");
         System.out.print("PILIH MENU > ");
 
         int selectedMenu = Integer.parseInt(input.next());
 
         switch (selectedMenu) {
-            case 1 -> addData();
-            case 2 -> showAll(false);
-            case 3 -> editData();
-            case 4 -> deleteData();
-            case 5 -> System.exit(0);
+            case 1 ->
+                addData();
+            case 2 ->
+                showAll(false);
+            case 3 ->
+                editData();
+            case 4 ->
+                deleteData();
+            case 5 ->
+                iCetakStruk();
+            case 6 ->
+                System.exit(0);
             default -> {
                 System.out.println("");
                 System.out.println("[!] Pilihan Salah!");
@@ -118,7 +127,7 @@ public class ProjekKoprasi {
 
     static void addData() throws IOException {
         boolean lanjut = true;
-        
+
         do {
             System.out.println("");
 
@@ -149,8 +158,10 @@ public class ProjekKoprasi {
             System.out.print("Pekerjaan: ");
             String pekerjaan = input.next();
 
-            database.add(new DataKoperasi(nama, induk, nomorTelepon, alamat, jenisKelamin, simpanan, pekerjaan));
-            
+            DataKoperasi data = new DataKoperasi(nama, induk, nomorTelepon, alamat, jenisKelamin, simpanan, pekerjaan);
+            database.add(data);
+            cetakStruk(data);
+
             System.out.print("Tambah data lagi? (y/t): ");
             String jawab = input.next();
             System.out.println("");
@@ -220,14 +231,15 @@ public class ProjekKoprasi {
 
             System.out.println("-".repeat(baris));
             System.out.printf("| %-2s | %-97s |     %-8s |    %-6s |\n",
-            "", "Subtotal Hal Ini", totalSimpanan, totalBunga);
+                    "", "Subtotal Hal Ini", totalSimpanan, totalBunga);
             System.out.println("-".repeat(baris));
             System.out.printf("| %-2s | %-97s |     %-8s |    %-6s |\n",
-            "", "Grand total", totalGrandSimpanan, totalGrandBunga);
+                    "", "Grand total", totalGrandSimpanan, totalGrandBunga);
             System.out.println("-".repeat(baris));
 
-            if (readOnly == true)
+            if (readOnly == true) {
                 break;
+            }
 
             if (page < totalPages) {
                 System.out.print("\nTekan 'n' untuk halaman berikutnya atau 'q' untuk keluar: ");
@@ -255,6 +267,12 @@ public class ProjekKoprasi {
     }
 
     static void editData() throws IOException {
+        if (database.isEmpty()) {
+            System.out.println("[!] Belum Ada Data!");
+            System.out.println("");
+            return;
+        }
+
         showAll(true);
 
         System.out.print("Pilih Nomer Data: ");
@@ -302,6 +320,12 @@ public class ProjekKoprasi {
     }
 
     static void deleteData() throws IOException {
+        if (database.isEmpty()) {
+            System.out.println("[!] Belum Ada Data!");
+            System.out.println("");
+            return;
+        }
+
         showAll(true);
 
         System.out.print("Pilih Nomer Data: ");
@@ -311,6 +335,51 @@ public class ProjekKoprasi {
 
         System.out.println("[!] Berhasil menghapus data!");
         System.out.println("");
+    }
+
+    static void iCetakStruk() throws IOException {
+        if (database.isEmpty()) {
+            System.out.println("[!] Belum Ada Data!");
+            System.out.println("");
+            return;
+        }
+
+        showAll(true);
+
+        System.out.print("Pilih Nomer Data: ");
+        int index = Integer.parseInt(input.next()) - 1;
+
+        cetakStruk(database.get(index));
+    }
+
+    static void cetakStruk(DataKoperasi data) {
+        int bungaTotal = data.getSimpanan() * bunga / 100;
+        System.out.println("");
+        System.out.println("===========================================");
+        System.out.println("            KWITANSI PEMBAYARAN            ");
+        System.out.println("               KOPERASI AN NISA            ");
+        System.out.println("===========================================");
+        System.out.println("DATA PEMBAYARAN:");
+        System.out.println("Nama             : " + data.getNama());
+        System.out.println("Nomer Induk      : " + data.getNomorInduk());
+        System.out.println("Jenis Kelamin    : " + data.getJenisKelamin());
+        System.out.println("Alamat           : " + data.getAlamat());
+        System.out.println("Nomer Telepon    : " + data.getNomorTelepon());
+        System.out.println("-------------------------------------------");
+        System.out.println("DETAIL PEMBAYARAN:");
+        System.out.printf("Simpanan         : Rp %,d\n", data.getSimpanan());
+        System.out.printf("Bunga (2%%)       : Rp %,d\n", bungaTotal);
+        System.out.printf("Total Pembayaran : Rp %,d\n", data.getSimpanan() + bungaTotal);
+        System.out.println("===========================================");
+        System.out.println("TERIMA KASIH TELAH MENGGUNAKAN LAYANAN KAMI");
+        System.out.println("===========================================");
+        System.out.println("");
+        System.out.println("Tekan Enter untuk melanjutkan...");
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            System.out.println("Error membaca input.");
+        }
     }
 
     public static void main(String[] args) throws IOException {
