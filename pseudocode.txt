@@ -43,6 +43,7 @@ CLASS ProjekKoprasi
             INPUT semua atribut DataKoperasi
             VALIDATE jenisKelamin (harus 'L' atau 'P')
             ADD data baru ke database
+            CALL cetakStruk(data)
             ASK user untuk melanjutkan atau berhenti
 
     FUNCTION showAll(readOnly)
@@ -67,6 +68,22 @@ CLASS ProjekKoprasi
         INPUT index data yang akan dihapus
         REMOVE data dari database
         PRINT "Berhasil menghapus data!"
+
+    FUNCTION iCetakStruk()
+        IF database is empty:
+            PRINT "Belum Ada Data!"
+        RETURN
+        
+        CALL showAll(true)
+        INPUT index data yang akan dihapus
+        CALL cetakStruk(data)
+
+    FUNCTION cetakStruk(data)
+        CALCULATE bungaTotal = data.simpanan * bunga / 100
+        PRINT struk pembayaran:
+            Nama, Nomor Induk, Alamat, Jenis Kelamin, Nomor Telepon Simpanan, Bunga, Total Pembayaran
+        WAIT for user input to continue
+
 
     MAIN FUNCTION main()
         LOOP WHILE isRunning:
